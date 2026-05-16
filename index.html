@@ -1,163 +1,430 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>恢复—节律系统 V3.0</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            -webkit-tap-highlight-color: transparent;
-        }
-        :root {
-            --bg-deep: #060814;
-            --bg-mid: #0a0e1f;
-            --bg-card: rgba(20, 26, 50, 0.55);
-            --accent-1: #7c5cff; /* 紫 */
-            --accent-2: #4ad6ff; /* 青 */
-            --accent-3: #b388ff; /* 浅紫 */
-            --text-1: #e8ecff;
-            --text-2: #9aa3c7;
-            --text-3: #5c6489;
-            --border: rgba(124, 92, 255, 0.25);
-            --glow: 0 0 40px rgba(124, 92, 255, 0.35);
-        }
-        html, body {
-            height: 100%;
-            overflow: hidden;
-            background: var(--bg-deep);
-            color: var(--text-1);
-            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "PingFang SC", "Microsoft YaHei", sans-serif;
-            font-weight: 300;
-            line-height: 1.7;
-            letter-spacing: 0.02em;
-            -webkit-font-smoothing: antialiased;
-        }
-        /* 背景星空粒子 */
-        #stars {
-            position: fixed;
-            inset: 0;
-            z-index: 0;
-            pointer-events: none;
-        }
-        /* 背景光晕 */
-        .aurora {
-            position: fixed;
-            inset: 0;
-            z-index: 1;
-            pointer-events: none;
-            overflow: hidden;
-        }
-        .aurora::before, .aurora::after {
-            content: '';
-            position: absolute;
-            width: 60vw;
-            height: 60vw;
-            border-radius: 50%;
-            filter: blur(80px);
-            opacity: 0.35;
-            animation: drift 18s ease-in-out infinite alternate;
-        }
-        .aurora::before {
-            background: radial-gradient(circle, var(--accent-1), transparent 60%);
-            top: -20%;
-            left: -10%;
-        }
-        .aurora::after {
-            background: radial-gradient(circle, var(--accent-2), transparent 60%);
-            bottom: -25%;
-            right: -15%;
-            animation-delay: -9s;
-        }
-        @keyframes drift {
-            0% { transform: translate(0, 0) scale(1); }
-            100% { transform: translate(8vw, -6vw) scale(1.15); }
-        }
-        /* 顶部进度条 */
-        .topbar {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            z-index: 50;
-            padding: 14px 20px 10px;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            background: linear-gradient(to bottom, rgba(6,8,20,0.85), transparent);
-            backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
-        }
-        .brand {
-            font-size: 11px;
-            letter-spacing: 0.3em;
-            color: var(--text-3);
-            text-transform: uppercase;
-            white-space: nowrap;
-        }
-        .progress-track {
-            flex: 1;
-            height: 2px;
-            background: rgba(124, 92, 255, 0.12);
-            border-radius: 2px;
-            overflow: hidden;
-        }
-        .progress-fill {
-            height: 100%;
-            width: 0%;
-            background: linear-gradient(90deg, var(--accent-1), var(--accent-2));
-            box-shadow: 0 0 12px var(--accent-1);
-            transition: width 0.6s cubic-bezier(0.22, 1, 0.36, 1);
-        }
-        .page-num {
-            font-size: 11px;
-            color: var(--text-2);
-            font-variant-numeric: tabular-nums;
-            letter-spacing: 0.1em;
-        }
-        /* 页面容器 */
-        .stage {
-            position: relative;
-            z-index: 10;
-            width: 100%;
-            height: 100vh;
-            height: 100dvh;
-            overflow: hidden;
-        }
-        .page {
-            position: absolute;
-            inset: 0;
-            padding: 70px 24px 110px;
-            overflow-y: auto;
-            overflow-x: hidden;
-            opacity: 0;
-            transform: translateY(20px);
-            pointer-events: none;
-            transition: opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1), transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
-            -webkit-overflow-scrolling: touch;
-            scrollbar-width: none;
-        }
-        .page::-webkit-scrollbar {
-            display: none;
-        }
-        .page.active {
-            opacity: 1;
-            transform: translateY(0);
-            pointer-events: auto;
-        }
-        .page.prev {
-            transform: translateY(-20px);
-        }
-        /* 页面内容包装 */
-        .wrap {
-            max-width: 720px;
-            margin: 0 auto;
-        }
-        /* 章节标签 */
-        .chapter-tag {
-            display: inline-block;
-            font-size: 11px;
-            letter-spacing: 0.35em;
-            color: var(-
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<title>恢复—节律系统 V3.0</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+:root{--bg:#060814;--card:rgba(20,26,50,.55);--a1:#7c5cff;--a2:#4ad6ff;--a3:#b388ff;--t1:#e8ecff;--t2:#9aa3c7;--t3:#5c6489;--bd:rgba(124,92,255,.25);--glow:0 0 40px rgba(124,92,255,.35)}
+html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--t1);font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;font-weight:300;line-height:1.7;letter-spacing:.02em;-webkit-font-smoothing:antialiased}
+.aurora{position:fixed;inset:0;z-index:1;pointer-events:none;overflow:hidden}
+.aurora::before,.aurora::after{content:'';position:absolute;width:70vw;height:70vw;border-radius:50%;filter:blur(90px);opacity:.35;animation:drift 20s ease-in-out infinite alternate}
+.aurora::before{background:radial-gradient(circle,var(--a1),transparent 60%);top:-25%;left:-15%}
+.aurora::after{background:radial-gradient(circle,var(--a2),transparent 60%);bottom:-30%;right:-20%;animation-delay:-10s}
+@keyframes drift{0%{transform:translate(0,0) scale(1)}100%{transform:translate(8vw,-6vw) scale(1.15)}}
+.grid-bg{position:fixed;inset:0;z-index:0;background-image:linear-gradient(rgba(124,92,255,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(124,92,255,.04) 1px,transparent 1px);background-size:40px 40px;mask-image:radial-gradient(ellipse at center,#000,transparent 75%);-webkit-mask-image:radial-gradient(ellipse at center,#000,transparent 75%)}
+.topbar{position:fixed;top:0;left:0;right:0;z-index:50;padding:14px 20px 10px;display:flex;align-items:center;gap:12px;background:linear-gradient(to bottom,rgba(6,8,20,.85),transparent);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
+.brand{font-size:11px;letter-spacing:.3em;color:var(--t3);text-transform:uppercase;white-space:nowrap}
+.track{flex:1;height:2px;background:rgba(124,92,255,.12);border-radius:2px;overflow:hidden}
+.fill{height:100%;width:0%;background:linear-gradient(90deg,var(--a1),var(--a2));box-shadow:0 0 12px var(--a1);transition:width .6s cubic-bezier(.22,1,.36,1)}
+.pn{font-size:11px;color:var(--t2);font-variant-numeric:tabular-nums;letter-spacing:.1em}
+.stage{position:relative;z-index:10;width:100%;height:100vh;height:100dvh;overflow:hidden}
+.page{position:absolute;inset:0;padding:70px 24px 110px;overflow-y:auto;overflow-x:hidden;opacity:0;transform:translateY(20px);pointer-events:none;transition:opacity .7s cubic-bezier(.22,1,.36,1),transform .7s cubic-bezier(.22,1,.36,1);-webkit-overflow-scrolling:touch;scrollbar-width:none}
+.page::-webkit-scrollbar{display:none}
+.page.active{opacity:1;transform:translateY(0);pointer-events:auto}
+.page.prev{transform:translateY(-20px)}
+.wrap{max-width:720px;margin:0 auto}
+.tag{display:inline-block;font-size:11px;letter-spacing:.35em;color:var(--a2);margin-bottom:16px;padding:5px 12px;border:1px solid var(--bd);border-radius:100px;background:rgba(124,92,255,.08);text-transform:uppercase;animation:fu .8s .1s both}
+h1.title{font-size:clamp(28px,7vw,44px);font-weight:200;line-height:1.25;letter-spacing:-.01em;margin-bottom:18px;background:linear-gradient(135deg,#fff 0%,#b388ff 60%,#4ad6ff 100%);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;animation:fu .9s .2s both}
+h2.sub{font-size:clamp(17px,4.3vw,22px);font-weight:300;color:var(--t2);margin-bottom:28px;animation:fu .9s .3s both}
+h3.sec{font-size:18px;font-weight:400;color:var(--a3);margin:24px 0 12px;animation:fu .8s both;letter-spacing:.02em}
+p.lead{font-size:clamp(15px,4vw,17px);color:var(--t1);margin-bottom:16px;animation:fu .9s .4s both}
+p.body{font-size:14.5px;color:var(--t2);margin-bottom:12px;animation:fu .9s .5s both}
+.quote{position:relative;padding:18px 20px;margin:20px 0;background:linear-gradient(135deg,rgba(124,92,255,.1),rgba(74,214,255,.04));border-left:2px solid var(--a1);border-radius:4px 14px 14px 4px;font-size:15px;color:var(--t1);line-height:1.75;animation:fu .9s .5s both;box-shadow:inset 0 0 30px rgba(124,92,255,.05)}
+.card{background:var(--card);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border:1px solid var(--bd);border-radius:16px;padding:18px 20px;margin-bottom:12px;transition:all .3s;animation:fu .9s both}
+.card:hover,.card:active{border-color:rgba(124,92,255,.5);transform:translateY(-2px);box-shadow:var(--glow)}
+.ct{font-size:13px;font-weight:500;color:var(--a2);margin-bottom:6px;letter-spacing:.08em}
+.cb{font-size:14px;color:var(--t2);line-height:1.7}
+.vcard{background:linear-gradient(135deg,rgba(124,92,255,.12),rgba(74,214,255,.05));border:1px solid var(--bd);border-radius:18px;padding:20px;margin-bottom:14px;position:relative;overflow:hidden;animation:fu .9s both}
+.vcard::before{content:attr(data-l);position:absolute;top:-15px;right:14px;font-size:90px;font-weight:100;color:rgba(124,92,255,.15);line-height:1;font-family:Georgia,serif;font-style:italic}
+.vn{font-size:11px;letter-spacing:.25em;color:var(--a2);margin-bottom:6px;text-transform:uppercase;position:relative;z-index:1}
+.vt{font-size:18px;color:#fff;margin-bottom:10px;font-weight:400;position:relative;z-index:1}
+.vd{font-size:13.5px;color:var(--t2);line-height:1.7;position:relative;z-index:1}
+.row{display:flex;padding:11px 16px;border-bottom:1px solid rgba(124,92,255,.1);font-size:13px;gap:14px;animation:fu .7s both}
+.row:last-child{border-bottom:none}
+.row .k{flex:0 0 38%;color:var(--a3);font-weight:400}
+.row .v{flex:1;color:var(--t2)}
+.tbl{background:var(--card);border:1px solid var(--bd);border-radius:14px;overflow:hidden;margin:14px 0;backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px)}
+.tbl-h{display:flex;padding:12px 16px;font-size:11px;letter-spacing:.2em;color:var(--a2);text-transform:uppercase;border-bottom:1px solid var(--bd);background:rgba(124,92,255,.05);gap:14px}
+.tbl-h .k{flex:0 0 38%}
+.tbl-h .v{flex:1}
+.fml{text-align:center;padding:28px 18px;margin:22px 0;background:radial-gradient(ellipse at center,rgba(124,92,255,.18),transparent 70%);border-radius:18px;border:1px solid var(--bd);animation:fu 1s .4s both}
+.fml .eq{font-size:clamp(20px,5.5vw,26px);font-weight:300;background:linear-gradient(135deg,#fff,#4ad6ff);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;letter-spacing:.03em;margin-bottom:10px;font-family:Georgia,serif;font-style:italic}
+.fml .ed{font-size:12px;color:var(--t3);letter-spacing:.1em}
+ul.list{list-style:none;padding:0;margin:14px 0;animation:fu .9s both}
+ul.list li{position:relative;padding:8px 0 8px 22px;font-size:14px;color:var(--t2);line-height:1.65}
+ul.list li::before{content:'';position:absolute;left:4px;top:16px;width:6px;height:6px;border-radius:50%;background:var(--a1);box-shadow:0 0 8px var(--a1)}
+.flow{display:flex;flex-direction:column;gap:10px;margin:18px 0;animation:fu .9s both}
+.flow-item{padding:12px 16px;background:var(--card);border:1px solid var(--bd);border-radius:12px;font-size:13.5px;color:var(--t1);position:relative;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
+.flow-item .n{display:inline-block;width:22px;height:22px;line-height:22px;text-align:center;border-radius:50%;background:linear-gradient(135deg,var(--a1),var(--a2));color:#fff;font-size:11px;margin-right:10px;font-weight:500}
+.flow-arrow{text-align:center;color:var(--a1);font-size:14px;line-height:0.5;opacity:.6}
+.hero{min-height:calc(100vh - 180px);display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center}
+.hero .big{font-size:clamp(40px,12vw,80px);font-weight:100;line-height:1;letter-spacing:-.02em;background:linear-gradient(135deg,#fff 0%,#b388ff 50%,#4ad6ff 100%);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:20px;animation:fu 1.2s .3s both}
+.hero .ver{font-size:13px;letter-spacing:.5em;color:var(--a2);margin-bottom:32px;animation:fu 1s .6s both}
+.hero .desc{font-size:15px;color:var(--t2);max-width:480px;animation:fu 1s .9s both;line-height:1.8}
+.hero .pulse{width:80px;height:80px;border-radius:50%;background:radial-gradient(circle,var(--a1),transparent 70%);margin-bottom:30px;animation:pulse 3s ease-in-out infinite;position:relative}
+.hero .pulse::after{content:'';position:absolute;inset:-10px;border:1px solid var(--a1);border-radius:50%;animation:ripple 3s ease-out infinite;opacity:.5}
+@keyframes pulse{0%,100%{transform:scale(1);opacity:.8}50%{transform:scale(1.15);opacity:1}}
+@keyframes ripple{0%{transform:scale(.8);opacity:.8}100%{transform:scale(1.6);opacity:0}}
+.warn{padding:16px 20px;margin:16px 0;border-left:3px solid #ff7a7a;background:linear-gradient(90deg,rgba(255,122,122,.08),transparent);border-radius:4px 14px 14px 4px;font-size:14px;color:var(--t1);animation:fu .8s both}
+.warn .wt{font-size:11px;color:#ff7a7a;letter-spacing:.25em;margin-bottom:6px;text-transform:uppercase}
+.cycle{display:flex;justify-content:space-between;gap:10px;margin:18px 0;animation:fu .9s both}
+.cycle-half{flex:1;padding:18px 14px;border-radius:14px;background:var(--card);border:1px solid var(--bd);text-align:center}
+.cycle-half .ch-t{font-size:11px;color:var(--a2);letter-spacing:.2em;margin-bottom:6px}
+.cycle-half .ch-n{font-size:15px;color:#fff;margin-bottom:8px;font-weight:400}
+.cycle-half .ch-d{font-size:12px;color:var(--t3);line-height:1.6}
+@keyframes fu{from{opacity:0;transform:translateY(15px)}to{opacity:1;transform:translateY(0)}}
+.nav{position:fixed;bottom:0;left:0;right:0;z-index:50;padding:14px 20px 22px;display:flex;justify-content:center;gap:10px;background:linear-gradient(to top,rgba(6,8,20,.95),rgba(6,8,20,.7) 70%,transparent);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
+.btn{padding:11px 18px;border-radius:100px;border:1px solid var(--bd);background:rgba(20,26,50,.6);color:var(--t1);font-size:13px;letter-spacing:.05em;cursor:pointer;transition:all .25s;font-family:inherit;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);display:flex;align-items:center;gap:6px;min-width:48px;justify-content:center}
+.btn:hover,.btn:active{border-color:var(--a1);color:#fff;box-shadow:0 0 20px rgba(124,92,255,.3)}
+.btn:disabled{opacity:.3;cursor:not-allowed}
+.btn.play{background:linear-gradient(135deg,var(--a1),var(--a2));border-color:transparent;color:#fff;font-weight:500;padding:11px 22px;box-shadow:0 4px 20px rgba(124,92,255,.4)}
+.btn.play.on{background:linear-gradient(135deg,#ff7a9c,#ff7a7a)}
+.kbd{display:none}
+@media (min-width:768px){.kbd{display:inline;font-size:10px;color:var(--t3);margin-left:6px;padding:2px 6px;border:1px solid var(--t3);border-radius:4px}}
+.toast{position:fixed;top:80px;left:50%;transform:translateX(-50%) translateY(-20px);z-index:100;padding:10px 18px;background:rgba(124,92,255,.95);color:#fff;font-size:13px;border-radius:100px;opacity:0;transition:all .4s;pointer-events:none;letter-spacing:.05em;box-shadow:0 4px 30px rgba(124,92,255,.5)}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+</style>
+</head><body>
+<div class="grid-bg"></div>
+<div class="aurora"></div>
+
+<div class="topbar">
+  <span class="brand">CLAUDE · 恢复节律系统</span>
+  <div class="track"><div class="fill" id="fill"></div></div>
+  <span class="pn" id="pn">01 / 10</span>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<div class="stage" id="stage">
+
+<!-- ========== 第 1 页：封面 ========== -->
+<section class="page active">
+  <div class="wrap hero">
+    <div class="pulse"></div>
+    <div class="big">恢复<br>节律系统</div>
+    <div class="ver">V 3.0 · 生命控制论</div>
+    <p class="desc">为什么人不能无限清醒、无限学习、无限控制自己，<br>而必须周期性睡眠、恢复、重整？</p>
+  </div>
+</section>
+
+<!-- ========== 第 2 页：总定义 ========== -->
+<section class="page">
+  <div class="wrap">
+    <span class="tag">00 · OVERVIEW</span>
+    <h1 class="title">这不只是"睡眠"</h1>
+    <h2 class="sub">恢复—节律系统的精确定义</h2>
+    <p class="lead">"睡觉有助学习"——这种说法太粗糙了。</p>
+    <div class="quote">恢复—节律系统 = 开放生命系统在清醒对外输出后，为了重新维持内部稳定，通过<b style="color:#fff">睡眠压力、昼夜节律、唤醒调节和睡眠结构</b>，把身体与大脑周期性切换到内部维护状态的控制系统。</div>
+    <p class="body">它要回答的核心问题是：</p>
+    <p class="lead" style="color:var(--a3)">"为什么我们必须睡觉？"</p>
+    <p class="body">答案不在心理学，而在控制论——任何对外开放的系统，都需要周期性回到"内部维护"状态。</p>
+  </div>
+</section>
+
+<!-- ========== 第 3 页：五条公理 ========== -->
+<section class="page">
+  <div class="wrap">
+    <span class="tag">01 · AXIOMS</span>
+    <h1 class="title">五条公理</h1>
+    <h2 class="sub">为什么这个系统必须存在</h2>
+
+    <div class="card"><div class="ct">公理 1</div><div class="cb"><b style="color:#fff">生命体是开放系统，必须维持内部可运行状态。</b><br><br>持续与外界交换物质、能量、信息、反馈。变量须维持在可运行范围：血糖、血氧、体温、神经兴奋度、激素、免疫……这就是<b style="color:var(--a3)">稳态</b>。</div></div>
+
+    <div class="flow-arrow">↓</div>
+
+    <div class="card"><div class="ct">公理 2</div><div class="cb"><b style="color:#fff">为生存与学习，必须对外感知、预测、行动。</b><br><br>清醒 = 输入开放 + 信息加工 + 行为控制 + 记忆更新。但这种状态会持续消耗、积累损耗。</div></div>
+
+    <div class="flow-arrow">↓</div>
+
+    <div class="card"><div class="ct">公理 3</div><div class="cb"><b style="color:#fff">清醒一定会积累损耗，无法无限持续。</b><br><br>代谢产物堆积、突触强度饱和、神经元疲劳、情绪与控制资源耗竭。必须有"<b style="color:var(--a3)">还债机制</b>"。</div></div>
+
+    <div class="flow-arrow">↓</div>
+
+    <div class="card"><div class="ct">公理 4</div><div class="cb"><b style="color:#fff">地球有 24 小时光暗周期。</b><br><br>生命体把节律内化为内部时钟——昼夜节律 C。它决定"何时该清醒、何时该休息"。</div></div>
+
+    <div class="flow-arrow">↓</div>
+
+    <div class="card"><div class="ct">公理 5</div><div class="cb"><b style="color:#fff">必须有切换机制：清醒 ⇌ 睡眠。</b><br><br>不能同时既对外输出又对内维护。系统必须能在两种模式间稳定、安全地切换。</div></div>
+  </div>
+</section>
+
+<!-- ========== 第 4 页：四个核心变量 ========== -->
+<section class="page">
+  <div class="wrap">
+    <span class="tag">02 · VARIABLES</span>
+    <h1 class="title">四个内生变量</h1>
+    <h2 class="sub">系统运作的核心状态量</h2>
+
+    <div class="vcard" data-l="H">
+      <div class="vn">Homeostatic Pressure</div>
+      <div class="vt">H · 睡眠压力</div>
+      <div class="vd">清醒时间越长，H 越高。代谢产物（如腺苷）在大脑积累，产生"困意"。睡眠时 H 下降，清醒时持续上升。<br><br><b style="color:var(--a3)">直觉：</b>它是一个"清醒负债计数器"。</div>
+    </div>
+
+    <div class="vcard" data-l="C">
+      <div class="vn">Circadian Rhythm</div>
+      <div class="vt">C · 昼夜节律</div>
+      <div class="vd">由视交叉上核（SCN）驱动的约 24 小时内部时钟。受光照重置。决定"什么时间该清醒/该睡"，不依赖你累不累。<br><br><b style="color:var(--a3)">直觉：</b>它是身体的"时区"。</div>
+    </div>
+
+    <div class="vcard" data-l="A">
+      <div class="vn">Arousal</div>
+      <div class="vt">A · 唤醒水平</div>
+      <div class="vd">由压力、咖啡因、情绪、危险感等驱动的"强行清醒"力量。可以暂时压制 H 和 C。<br><br><b style="color:var(--a3)">直觉：</b>它是身体的"应急油门"，但会透支。</div>
+    </div>
+
+    <div class="vcard" data-l="S">
+      <div class="vn">Sleep Structure</div>
+      <div class="vt">S · 睡眠结构</div>
+      <div class="vd">睡眠不是单一状态，而是 NREM（浅→深）与 REM 周期性交替。结构完整，恢复才完整。<br><br><b style="color:var(--a3)">直觉：</b>"睡了 8 小时"不等于"睡好了"。</div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== 第 5 页：系统算法 ========== -->
+<section class="page">
+  <div class="wrap">
+    <span class="tag">03 · ALGORITHM</span>
+    <h1 class="title">系统核心算法</h1>
+    <h2 class="sub">困意是怎么计算出来的</h2>
+
+    <div class="fml">
+      <div class="eq">P = f ( H , C , A )</div>
+      <div class="ed">SLEEP PROPENSITY FUNCTION</div>
+    </div>
+
+    <p class="body">"想睡"不是单一信号，而是三个变量的合成结果：</p>
+    <ul class="list">
+      <li>H 高 + C 低 + A 低 → <b style="color:#fff">强烈想睡</b>（深夜疲劳）</li>
+      <li>H 高 + C 高 + A 高 → <b style="color:#fff">困但睡不着</b>（熬夜兴奋）</li>
+      <li>H 低 + C 低 → <b style="color:#fff">该睡睡不着</b>（白天补觉失败）</li>
+      <li>H 高 + C 高 → <b style="color:#fff">清醒高效</b>（午后专注力）</li>
+    </ul>
+
+    <h3 class="sec">现象解释</h3>
+    <div class="tbl">
+      <div class="tbl-h"><div class="k">现象</div><div class="v">系统级解释</div></div>
+      <div class="row"><div class="k">熬夜越晚越清醒</div><div class="v">C 高峰 + A 拉高，压制 H</div></div>
+      <div class="row"><div class="k">下午 3 点犯困</div><div class="v">C 出现日间低谷，H 已积累</div></div>
+      <div class="row"><div class="k">玩手机睡不着</div><div class="v">蓝光抑制褪黑素，A 被拉高</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== 第 6 页：REM 缺失代价 ========== -->
+<section class="page">
+  <div class="wrap">
+    <span class="tag">04 · COST</span>
+    <h1 class="title">REM 缺失代价</h1>
+    <h2 class="sub">为什么不能长期晚睡早起</h2>
+    <div class="warn">
+      <div class="wt">关键结论</div>
+      长期缺少 REM = 情绪失调、易怒、焦虑、创造力下降、复杂学习能力受损。
+    </div>
+  </div>
+</section>
+
+<!-- ========== 第 7 页：睡眠周期结构 ========== -->
+<section class="page">
+  <div class="wrap">
+    <span class="tag">06 · STRUCTURE</span>
+    <h1 class="title">睡眠周期</h1>
+    <h2 class="sub">前半夜与后半夜，做的是不同的事</h2>
+    <p class="lead">一夜睡眠包含 4-6 个 90 分钟循环。但每个循环的"组成比例"完全不同。</p>
+    <div class="cycle">
+      <div class="cycle-half">
+        <div class="ch-t">FIRST HALF</div>
+        <div class="ch-n">前半夜</div>
+        <div class="ch-d">NREM 深睡眠占比高<br>身体修复 · 知识沉淀</div>
+      </div>
+      <div class="cycle-half">
+        <div class="ch-t">SECOND HALF</div>
+        <div class="ch-n">后半夜</div>
+        <div class="ch-d">REM 占比逐渐升高<br>情绪整理 · 创造联想</div>
+      </div>
+    </div>
+    <h3 class="sec">这意味着什么</h3>
+    <ul class="list">
+      <li><b style="color:#fff">早睡晚起 ≠ 睡得久就够。</b>掐头去尾都会让结构残缺。</li>
+      <li><b style="color:#fff">凌晨 2 点睡 + 早 7 点起 → 失去 REM 黄金期。</b>第二天易怒、思维僵化。</li>
+      <li><b style="color:#fff">晚上 11 点睡 + 凌晨 4 点起 → 失去深 NREM。</b>身体没修好、知识没固化。</li>
+    </ul>
+    <div class="quote">睡眠时长重要，但<b style="color:#fff">睡眠结构</b>更重要。完整的 7-8 小时 ≠ 任意时段拼凑的 7-8 小时。</div>
+  </div>
+</section>
+
+<!-- ========== 第 8 页：反馈环 ========== -->
+<section class="page">
+  <div class="wrap">
+    <span class="tag">07 · FEEDBACK</span>
+    <h1 class="title">三种反馈环</h1>
+    <h2 class="sub">系统如何自我维持与崩溃</h2>
+    <h3 class="sec">① 负反馈环 · 健康</h3>
+    <div class="flow">
+      <div class="flow-item"><span class="n">1</span>清醒 → H 升高</div>
+      <div class="flow-arrow">↓</div>
+      <div class="flow-item"><span class="n">2</span>困意触发睡眠</div>
+      <div class="flow-arrow">↓</div>
+      <div class="flow-item"><span class="n">3</span>睡眠消耗 H</div>
+      <div class="flow-arrow">↓</div>
+      <div class="flow-item"><span class="n">4</span>醒来 · 系统重置 ✓</div>
+    </div>
+    <h3 class="sec">② 正反馈环 · 失控</h3>
+    <div class="flow">
+      <div class="flow-item"><span class="n">1</span>压力 / 焦虑 → A 升高</div>
+      <div class="flow-arrow">↓</div>
+      <div class="flow-item"><span class="n">2</span>A 压制困意，无法入睡</div>
+      <div class="flow-arrow">↓</div>
+      <div class="flow-item"><span class="n">3</span>担心睡不着 → A 进一步升高</div>
+      <div class="flow-arrow">↓</div>
+      <div class="flow-item" style="border-color:#ff7a7a;color:#ff7a7a">⚠ 慢性失眠</div>
+    </div>
+    <h3 class="sec">③ 节律重建环 · 自愈</h3>
+    <div class="flow">
+      <div class="flow-item"><span class="n">1</span>固定起床时间 + 晨光</div>
+      <div class="flow-arrow">↓</div>
+      <div class="flow-item"><span class="n">2</span>C 被强制重置</div>
+      <div class="flow-arrow">↓</div>
+      <div class="flow-item"><span class="n">3</span>当晚 H 与 C 自然同步</div>
+      <div class="flow-arrow">↓</div>
+      <div class="flow-item" style="border-color:var(--a2);color:var(--a2)">✓ 入睡变容易</div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== 第 9 页：结语 ========== -->
+<section class="page">
+  <div class="wrap hero">
+    <div class="big" style="font-size:clamp(32px,9vw,56px)">系统级理解<br>带来系统级解法</div>
+    <div class="ver" style="margin-top:30px">END · THANK YOU</div>
+    <p class="desc">当你不再问"我怎样才能睡好"，<br>而是问"我的 H、C、A、S 现在处于什么状态"，<br>你就已经从用户变成了系统的<b style="color:var(--a3)">观察者与调节者</b>。</p>
+    <div style="margin-top:40px;font-size:11px;color:var(--t3);letter-spacing:.3em">POWERED BY CLAUDE</div>
+  </div>
+</section>
+
+</div><div class="nav">
+  <button class="btn" id="prev">← 上一页<span class="kbd">←</span></button>
+  <button class="btn play" id="play">▶ 自动播放</button>
+  <button class="btn" id="next">下一页 →<span class="kbd">→</span></button>
+</div>
+
+<script>
+(function(){
+  const pages = document.querySelectorAll('.page');
+  const total = pages.length;
+  const fill = document.getElementById('fill');
+  const pn = document.getElementById('pn');
+  const prevBtn = document.getElementById('prev');
+  const nextBtn = document.getElementById('next');
+  const playBtn = document.getElementById('play');
+  const toast = document.getElementById('toast');
+  const stage = document.getElementById('stage');
+  let cur = 0;
+  let playing = false;
+  let timer = null;
+  const DURATION = 8000; // 每页 8 秒
+
+  function pad(n){ return String(n).padStart(2,'0'); }
+
+  function showToast(msg){
+    toast.textContent = msg;
+    toast.classList.add('show');
+    clearTimeout(toast._t);
+    toast._t = setTimeout(()=>toast.classList.remove('show'), 1600);
+  }
+
+  function go(idx){
+    if(idx<0||idx>=total) return;
+    pages.forEach((p,i)=>{
+      p.classList.remove('active','prev');
+      if(i===idx) p.classList.add('active');
+      else if(i<idx) p.classList.add('prev');
+    });
+    // 重置滚动位置
+    pages[idx].scrollTop = 0;
+    cur = idx;
+    fill.style.width = ((idx+1)/total*100)+'%';
+    pn.textContent = pad(idx+1)+' / '+pad(total);
+    prevBtn.disabled = idx===0;
+    nextBtn.disabled = idx===total-1;
+    // 重新触发动画
+    const elements = pages[idx].querySelectorAll('[class*="fu"], .tag, .title, .sub, .lead, .body, .quote, .card, .vcard, .row, .fml, .list, .flow, .warn, .cycle');
+    elements.forEach(el=>{
+      const anim = el.style.animation;
+      el.style.animation = 'none';
+      void el.offsetWidth;
+      el.style.animation = '';
+    });
+  }
+
+  function next(){
+    if(cur<total-1) go(cur+1);
+    else if(playing) stopPlay();
+  }
+  function prev(){ if(cur>0) go(cur-1); }
+
+  function startPlay(){
+    playing = true;
+    playBtn.textContent = '⏸ 暂停播放';
+    playBtn.classList.add('on');
+    showToast('自动播放已开启');
+    scheduleNext();
+  }
+  function stopPlay(){
+    playing = false;
+    playBtn.textContent = '▶ 自动播放';
+    playBtn.classList.remove('on');
+    clearTimeout(timer);
+  }
+  function scheduleNext(){
+    clearTimeout(timer);
+    if(!playing) return;
+    timer = setTimeout(()=>{
+      if(cur<total-1){ go(cur+1); scheduleNext(); }
+      else stopPlay();
+    }, DURATION);
+  }
+
+  prevBtn.addEventListener('click', ()=>{ stopPlay(); prev(); });
+  nextBtn.addEventListener('click', ()=>{ stopPlay(); next(); });
+  playBtn.addEventListener('click', ()=>{
+    if(playing) stopPlay();
+    else startPlay();
+  });
+
+  // 键盘
+  document.addEventListener('keydown', e=>{
+    if(e.key==='ArrowLeft'){ stopPlay(); prev(); }
+    else if(e.key==='ArrowRight'){ stopPlay(); next(); }
+    else if(e.key===' '){ e.preventDefault(); playing?stopPlay():startPlay(); }
+  });
+
+  // 触摸滑动
+  let tx=0, ty=0, tt=0;
+  stage.addEventListener('touchstart', e=>{
+    const t = e.touches[0];
+    tx = t.clientX; ty = t.clientY; tt = Date.now();
+  }, {passive:true});
+  stage.addEventListener('touchend', e=>{
+    const t = e.changedTouches[0];
+    const dx = t.clientX - tx;
+    const dy = t.clientY - ty;
+    const dt = Date.now() - tt;
+    // 只处理水平滑动 · 距离>60 · 时间<500ms · 水平远大于垂直
+    if(dt<600 && Math.abs(dx)>60 && Math.abs(dx)>Math.abs(dy)*1.5){
+      stopPlay();
+      if(dx<0) next();
+      else prev();
+    }
+  }, {passive:true});
+
+  // 初始化
+  go(0);
+  setTimeout(()=>showToast('左右滑动 · 切换页面'), 800);
+})();
+</script>
+</body>
+</html>
